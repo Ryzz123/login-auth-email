@@ -1,40 +1,30 @@
 import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import { Route, Routes } from 'react-router-dom';
+import PrivateRoute from './routes/PrivateRoute';
+import PublicRoute from './routes/PublicRoute';
+import { AuthProvider } from './contexts/firebaseContext';
+import Dashboard from './pages/Dashboard';
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';  
+import EditProfile from './pages/EditProfile';
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path='/' element={<Dashboard />} />
+            <Route path='/edit-profile' element={<EditProfile />} />
+          </Route>
+          <Route path="/" element={<PublicRoute />}>
+            <Route path='/sign' element={<SignUp />} />
+            <Route path='/login' element={<Login />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </ChakraProvider>
   );
 }
